@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div>
+    <input type="email" id="email">
+    <input type="password" id="password">
+    <button onclick="login()">Login</button>
+    <button onclick="signup()">Sign up</button>
+    <button onclick="view_users()">View users</button>
+  </div>
+  <div>
+    <p id="logged_in_as">Not logged in!</p>
+  </div>
+  <a href="./checkout.html">Checkout now!</a>
+</body>
+
+</html>
+<script>
+  const view_users = () => {
+    fetch("http://127.0.0.1:3001/users").then((res) => res.json()).then(result => {
+      console.log({ result });
+    });
+  };
+  const login = () => {
+    const emailInput = document.getElementById("email");
+    const email = emailInput.value;
+    const passwordInput = document.getElementById("password");
+    const password = passwordInput.value;
+    fetch("http://127.0.0.1:3001/login", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    }).then((res) => res.json()).then(result => {
+      console.log({ result });
+      const { user_details, user_verified } = result;
+      if (user_verified) {
+        localStorage.setItem("user_details", JSON.stringify(user_details));
+        localStorage.setItem("user_verified", user_verified);
+        initialise_user();
+      }
+    });
+  };
+
+  const signup = () => {
+    const emailInput = document.getElementById("email");
+    const email = emailInput.value;
+    const passwordInput = document.getElementById("password");
+    const password = passwordInput.value;
+    fetch("http://127.0.0.1:3001/signup", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email,
+        password,
+        name: "Test name"
+      }),
+
+    }).then((res) => res.json()).then(result => {
+      console.log({ result });
+    });
+  };
+
+  const initialise_user = () => {
+    const user_details = JSON.parse(localStorage.getItem("user_details") || "{}");
+    if (user_details?.email) {
+      document.getElementById("logged_in_as").innerText = `Logged in as - ${user_details?.email}`;
+    }
+  };
+
+  initialise_user();
+</script>

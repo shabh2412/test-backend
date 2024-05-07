@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <h1>Enter your details</h1>
+  <input type="text" id="email">
+</body>
+
+</html>
+<script>
+  const initialise_user = () => {
+    const user_details = JSON.parse(localStorage.getItem("user_details") || "{}");
+    if (user_details?.email) {
+      document.getElementById("email").value = `${user_details?.email}`;
+    }
+  };
+
+  initialise_user();
+</script>
